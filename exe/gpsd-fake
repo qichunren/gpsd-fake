@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'bundler/setup'
+require 'gpsd-fake'
+
+options = {}
+option_parser = OptionParser.new do |opts|
+  opts.banner = 'gpsd-fake is mock tool to test gps related application.'
+
+  options[:show_help] = false
+  opts.on('-h', '--help', 'Show usage info') do
+    options[:show_help] = true
+  end
+
+  options[:show_version] = false
+  opts.on('-v', '--version', 'Show version info') do
+    options[:show_version] = true
+  end
+
+  opts.on('-f DATA_FILE', '--file DATA_FILE', 'GPS location point collection file.') do |value|
+    options[:file] = value
+  end
+
+end.parse!
+
+if options[:show_help]
+  puts "gpsd-fake [OPTIONS]\n\n"
+  puts 'Options:'
+  puts '    -v / --version'
+  puts
+  exit 0
+end
+
+if options[:show_version]
+  puts "gpsd-fake #{GpsdFake::VERSION}\n\n"
+  exit 0
+end
+
+if options[:file] == ''
+	puts "Pass -f DATA_FILE option"
+	exit 1
+end
+
+puts "options[:file]:#{options[:file]}"
+
+GpsdFake::Server.new(file: options[:file]).run

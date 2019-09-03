@@ -1,0 +1,1 @@
+require 'gpsd_fake/gpsd_fake'
