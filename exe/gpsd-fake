@@ -5,7 +5,8 @@ require 'bundler/setup'
 require 'gpsd-fake'
 
 options = {}
-option_parser = OptionParser.new do |opts|
+
+OptionParser.new do |opts|
   opts.banner = 'gpsd-fake is mock tool to test gps related application.'
 
   options[:show_help] = false
@@ -21,7 +22,6 @@ option_parser = OptionParser.new do |opts|
   opts.on('-f DATA_FILE', '--file DATA_FILE', 'GPS location point collection file.') do |value|
     options[:file] = value
   end
-
 end.parse!
 
 if options[:show_help]
@@ -37,11 +37,11 @@ if options[:show_version]
   exit 0
 end
 
-if options[:file] == ''
-	puts "Pass -f DATA_FILE option"
-	exit 1
+if options[:file].nil? || options[:file] == ''
+  puts 'Pass -f DATA_FILE option'
+  exit 1
 end
 
 puts "options[:file]:#{options[:file]}"
 
-GpsdFake::Server.new(file: options[:file]).run
+GpsdFake::Server.new(file: options[:file]).start.run
